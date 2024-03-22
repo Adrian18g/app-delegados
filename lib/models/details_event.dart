@@ -1,4 +1,3 @@
-//Adrian Gonzalez 2022-0479
 import 'dart:io';
 import 'package:flutter/material.dart';
 

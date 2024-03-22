@@ -1,3 +1,4 @@
+import 'package:election_day/screens/sign_user.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Delegados'),
+      home: CreateUser(),
     );
   }
 }
