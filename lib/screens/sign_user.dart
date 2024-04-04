@@ -36,37 +36,53 @@ class _CreateUserState extends State<CreateUser> {
         child: Container(
           margin: EdgeInsets.all(15.0),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
             onTap: () {
               _showOptionsDialog(context);
             },
-            child: Container(
-              width: 200,
-              height: 200,
+            child: _image != null
+                ? Image.file(
+                    _image!,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ):
+            Container(
+              width: 150,
+              height: 150,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/empty_profile.png'),
+                  image: AssetImage('assets/pic.jpg',),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
               ),
-              TextField(
+              SizedBox(height: 18.0,),
+
+              Container(child: Column( children: [
+                Text('Nombre:'),
+                TextField(
                 controller: nombreController,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(border: OutlineInputBorder()),
-            ),SizedBox(height: 12.0,),TextField(
+            ),SizedBox(height: 12.0,),
+             Text('Apellido:'),
+            TextField(
                 controller: apellidoController,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(border: OutlineInputBorder()),
-            ),SizedBox(height: 12.0,),TextField(
+            ),SizedBox(height: 12.0,),
+             Text('Matricula:'),
+            TextField(
                 controller: matriculaController,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(border: OutlineInputBorder()),
-            )],
+            )],),)
+              
+      ],
           ),
         ),
       ),);
