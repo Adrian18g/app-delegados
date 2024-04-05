@@ -25,7 +25,8 @@ class DatabaseHelper {
         fecha TEXT,
         titulo TEXT,
         descripcion TEXT,
-        foto TEXT
+        foto TEXT,
+        audio TEXT
       )
     ''');
 
