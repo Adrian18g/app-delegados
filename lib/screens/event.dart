@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart'; // Importa file_picker
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:election_day/db/database.dart';
 import 'package:election_day/helpers/datetime.dart';
 
@@ -17,6 +18,53 @@ class _CreateEventState extends State<MyHomePage> {
   File? _image;
   String? _imagePath;
   String? _audioPath;
+  bool _isRecording = false;
+
+  final recorder = FlutterSoundRecorder();
+  bool isRecorderReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initRecorder();
+  }
+
+  @override
+  void dispose() {
+    recorder.closeRecorder();
+    super.dispose();
+  }
+
+  Future initRecorder() async {
+    final status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      throw 'Microfone permission not granted';
+    }
+
+    await recorder.openRecorder();
+    isRecorderReady = true;
+    recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
+  }
+
+  Future<void> record() async {
+    if (!isRecorderReady) return;
+    await recorder.startRecorder(toFile: 'audio');
+    setState(() {
+      _isRecording = true;
+    });
+  }
+
+  Future<void> stop() async {
+    if (!isRecorderReady) return;
+
+    final path = await recorder.stopRecorder();
+    print(path);
+    setState(() {
+      _isRecording = false;
+      _audioPath = path;
+
+    });
+  }
 
   Future<void> _getImage(ImageSource source) async {
     final pickedImage = await ImagePicker().pickImage(source: source);
@@ -27,19 +75,6 @@ class _CreateEventState extends State<MyHomePage> {
         _imagePath = pickedImage.path; // Guardar la ruta del archivo
       }
     });
-  }
-
-  Future<void> _getAudio() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.audio,
-      allowCompression: true,
-    );
-
-    if (result != null) {
-      setState(() {
-        _audioPath = result.files.single.path!;
-      });
-    }
   }
 
   Future<void> _saveEvent() async {
@@ -129,15 +164,6 @@ class _CreateEventState extends State<MyHomePage> {
                       TextInputAction.done, // Configurar como finalizado
                   onEditingComplete: () => FocusScope.of(context).unfocus()),
               SizedBox(height: 15.0),
-              _image != null
-                  ? Image.file(
-                      _image!,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    )
-                  : Container(),
-              SizedBox(height: 15.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -154,13 +180,32 @@ class _CreateEventState extends State<MyHomePage> {
                     child: Icon(Icons.image),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      _getAudio();
+                    onPressed: () async {
+                      if (_isRecording) {
+                        await stop();
+                      } else {
+                        await record();
+                      }
                     },
-                    child: Icon(Icons.mic),
+                    child: Icon(_isRecording ? Icons.stop : Icons.mic),
                   ),
                 ],
               ),
+              if (_audioPath != null)
+      ElevatedButton(
+        onPressed: () {
+          _playAudio(_audioPath!);
+        },
+        child: Icon(Icons.play_arrow),
+      ),
+              _image != null
+                  ? Image.file(
+                      _image!,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    )
+                  : Container(),
             ],
           ),
         ),
@@ -171,4 +216,14 @@ class _CreateEventState extends State<MyHomePage> {
       ),
     );
   }
+
+  void _playAudio(String audioPath) async {
+  final player = FlutterSoundPlayer();
+  await player.startPlayer(
+    fromURI: audioPath,
+    codec: Codec.pcm16WAV,
+  );
+}
+
+
 }

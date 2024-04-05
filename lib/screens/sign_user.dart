@@ -120,7 +120,14 @@ class _CreateUserState extends State<CreateUser> {
                           if (nombre.isEmpty ||
                               apellido.isEmpty ||
                               matricula.isEmpty) {
-                            throw 'Todos los campos son requeridos';
+                            throw
+                            ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Todos los campos son requeridos'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
                           }
 
                           String foto = _imagePath ?? '';

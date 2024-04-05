@@ -38,7 +38,8 @@ dependencies:
   sqflite: ^2.3.3
   image_picker: ^1.0.7
   intl: ^0.19.0
-  file_picker: ^4.0.0
+  flutter_sound: ^9.2.13
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:

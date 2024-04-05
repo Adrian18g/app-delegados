@@ -1,5 +1,6 @@
-import 'package:election_day/screens/sign_user.dart';
 import 'package:flutter/material.dart';
+import 'package:election_day/screens/event.dart';
+import 'package:election_day/screens/sign_user.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: CreateUser(),
+      home: MyHomePage(),
     );
   }
 }
